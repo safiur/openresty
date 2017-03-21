@@ -19,14 +19,23 @@ class openresty::package {
   }
 exec { 'openresty::package::download_pcre':
    cwd	  => '/tmp',
-   command => 'wget ${openresty::param::pcre_url} -O pcre.tar.gz ; tar zxf pcre.tar.gz',
+   command => "wget ${openresty::param::pcre_url} -O pcre.tar.gz ; tar zxf pcre.tar.gz",
    require => [
      Package['wget'],
    ]
  }
+
+exec { 'openresty::package::download_openssl':
+   cwd	  => '/tmp',
+   command => "wget ${openresty::param::open_ssl} -O openssl.tar.gz ; tar zxf openssl.tar.gz",
+   require => [
+     Package['wget'],
+   ]
+ }
+
  exec { 'openresty::package::install_openresty':
     cwd     => '/tmp',
-    command => "tar zxf openresty.tar.gz ; cd openresty* ; ./configure --prefix=/usr/local/openresty  --with-luajit --with-pcre=/tmp/pcre-${openresty::param::pcre_version} --with-pcre-jit ; make && make install",
+    command => "tar zxf openresty.tar.gz ; cd openresty* ; ./configure --prefix=/usr/local/openresty  --with-openssl=/tmp/openssl-${openresty::param::openssl_version} --with-pcre=/tmp/pcre-${openresty::param::pcre_version} --with-luajit --with-pcre-jit ; make && make install; rm -rf /tmp/openssl*; rm -rf /tmp/pcre*; rm -rf /tmp/openresty*",
     require  => [
       Package['readline-devel'],
       Package['openssl-devel'],
@@ -35,6 +44,7 @@ exec { 'openresty::package::download_pcre':
       Package['perl'],
       Exec['openresty::package::download_openresty'],
       Exec['openresty::package::download_pcre'],
+      Exec['openresty::package::download_openssl']
     ],
   }
 }
