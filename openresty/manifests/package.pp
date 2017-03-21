@@ -28,7 +28,7 @@ exec { 'openresty::package::download_pcre':
 
  exec { 'openresty::package::install_openresty':
     cwd     => '/tmp',
-    command => "tar zxf openresty.tar.gz ; cd openresty* ; ./configure --prefix=/usr/local/openresty --with-pcre=/tmp/pcre-${openresty::param::pcre_version} --with-luajit --with-pcre-jit --with-http_ssl_module ; make && make install; rm -rf /tmp/openssl*; rm -rf /tmp/pcre*; rm -rf /tmp/openresty*",
+    command => "tar zxf openresty.tar.gz ; cd openresty* ; ./configure --prefix=/usr/local/openresty --with-pcre=/tmp/pcre-${openresty::param::pcre_version} --with-luajit --with-pcre-jit --with-http_ssl_module ; make && make install; rm -rf /tmp/pcre*; rm -rf /tmp/openresty*",
     require  => [
       Package['readline-devel'],
       Package['openssl-devel'],
